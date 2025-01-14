@@ -41,10 +41,15 @@ app.get("/", (req, res) => {
 <br>
 <button type="submit">Agregar Usuario</button>
 </form>        
-
+<a href="/usuarios">Usuarios JSON</a>
     `)
 })
 
+app.get("/usuarios", (req, res) => {
+    res.json(usuarios)
+})
+
+//POST
 app.post("/usuarios", (req, res) => {
     const nuevoUser = {
         id: req.body.id,
@@ -55,6 +60,62 @@ app.post("/usuarios", (req, res) => {
     usuarios.push(nuevoUser);
     res.redirect("/")
 })
+
+//BUSCAR POR RUTAS
+app.get("/usuarios/id/:id", (req, res) => {
+    const id = parseInt(req.params.id)
+    const usuarioFind = usuarios.find((usuario) => usuario.id === id)
+    if(!usuarioFind){
+        return res.status(404).json({error: "Usuario No Encontrado"})
+    }
+    res.json(usuarioFind)
+})
+app.get("/usuarios/nombre/:nombre", (req, res) => {
+    const nombre = req.params.nombre
+    const usuarioFind = usuarios.find((usuario) => usuario.nombre === nombre)
+    if(!usuarioFind){
+        return res.status(404).json({error: "Usuario No Encontrado"})
+    }
+    res.json(usuarioFind)
+})
+app.get("/usuarios/edad/:edad", (req, res) => {
+    const edad = parseInt(req.params.edad)
+    const usuarioFind = usuarios.find((usuario) => usuario.edad === edad)
+    if(!usuarioFind){
+        return res.status(404).json({error: "Usuario No Encontrado"})
+    }
+    res.json(usuarioFind)
+})
+app.get("/usuarios/lugarProcedencia/:lugarProcedencia", (req, res) => {
+    const lugarProcedencia = req.params.lugarProcedencia
+    const usuarioFind = usuarios.find((usuario) => usuario.lugarProcedencia === lugarProcedencia)
+    if(!usuarioFind){
+        return res.status(404).json({error: "Usuario No Encontrado"})
+    }
+    res.json(usuarioFind)
+})
+
+//PATCH
+app.patch("/usuarios/editar/:id", (req, res) => {
+    const id = parseInt(req.params.id); 
+    const usuario = usuarios.find((usuario) => usuario.id === id);
+
+    if (!usuario) {
+        return res.status(404).json({ error: "Usuario No Encontrado" });
+    }
+    const { nombre, edad, lugarProcedencia } = req.body;
+    
+    if (nombre !== undefined) {
+        usuario.nombre = nombre;
+    }
+    if (edad !== undefined) {
+        usuario.edad = parseInt(edad);
+    }
+    if (lugarProcedencia !== undefined) {
+        usuario.lugarProcedencia = lugarProcedencia;
+    }
+    res.json(usuario);
+});
 
 app.listen(PORT, () => {
     console.log(`Server Listening on Port: http://localhost/${PORT}`)
