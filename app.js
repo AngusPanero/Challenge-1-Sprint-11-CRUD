@@ -117,6 +117,20 @@ app.patch("/usuarios/editar/:id", (req, res) => {
     res.json(usuario);
 });
 
+//DELETE
+app.delete("/usuarios/eliminar/:id", (req, res) => {
+    const id = parseInt(req.params.id)
+    const index = usuarios.findIndex((usuario) => usuario.id === id)
+
+    if(index === -1){
+        return res.status(404).json({ error: "Usuario No Encontrado" })
+    }
+
+    const eliminarUsuario = usuarios.splice(index, 1)
+
+    res.json({ message: "Usuario Eliminado", usuario: eliminarUsuario[0] })
+})
+
 app.listen(PORT, () => {
     console.log(`Server Listening on Port: http://localhost/${PORT}`)
 })
